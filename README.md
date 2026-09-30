@@ -2,7 +2,7 @@
 
 https://github.com/Aleezmz/pixel-perfect-view-3102.git
 
-Actúa como un Desarrollador Full-Stack experto especializado en React, Vite, TypeScript y Tailwind CSS. 
+Actúa como un Desarrollador Full-Stack experto especializado en React, Vite, TypeScript y Tailwind CSS.
 
 Acabamos de adoptar este repositorio generado por Lovable (pixel-perfect-view-3102) como la base definitiva para la aplicación de finanzas familiares "Balanz". El diseño visual está impecable, pero necesitamos conectar la interactividad de los botones, los filtros de meses, la gestión de pestañas (Dashboard, Categorías, Integrantes y Movimientos) y el formulario de carga de gastos con una capa de estado funcional en el cliente (usando estados locales o un archivo de contexto temporal en TypeScript) antes de integrarlo con Supabase.
 

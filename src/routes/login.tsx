@@ -12,9 +12,15 @@ export const Route = createFileRoute("/login")({
   head: () => ({
     meta: [
       { title: "Iniciar sesión — Balanz" },
-      { name: "description", content: "Accedé a Balanz y controlá tus finanzas personales mes a mes." },
+      {
+        name: "description",
+        content: "Accedé a Balanz y controlá tus finanzas personales mes a mes.",
+      },
       { property: "og:title", content: "Iniciar sesión — Balanz" },
-      { property: "og:description", content: "Accedé a Balanz y controlá tus finanzas personales mes a mes." },
+      {
+        property: "og:description",
+        content: "Accedé a Balanz y controlá tus finanzas personales mes a mes.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
@@ -36,7 +42,10 @@ function LoginPage() {
     if (mode === "in") {
       const { error } = await supabase.auth.signInWithPassword({ email, password });
       setLoading(false);
-      if (error) { toast.error("Correo o contraseña incorrectos"); return; }
+      if (error) {
+        toast.error("Correo o contraseña incorrectos");
+        return;
+      }
       navigate({ to: "/" });
     } else {
       const { data, error } = await supabase.auth.signUp({
@@ -45,7 +54,10 @@ function LoginPage() {
         options: { emailRedirectTo: window.location.origin },
       });
       setLoading(false);
-      if (error) { toast.error(error.message); return; }
+      if (error) {
+        toast.error(error.message);
+        return;
+      }
       if (data.session) navigate({ to: "/" });
       else toast.success("Revisá tu correo para confirmar la cuenta");
     }
@@ -68,8 +80,12 @@ function LoginPage() {
         </div>
 
         <div className="glass rounded-3xl p-7 shadow-elegant sm:p-8">
-          <h2 className="text-lg font-semibold">{mode === "in" ? "Iniciar sesión" : "Crear cuenta"}</h2>
-          <p className="mt-1 text-sm text-muted-foreground">Ingresá para ver el resumen de tu mes.</p>
+          <h2 className="text-lg font-semibold">
+            {mode === "in" ? "Iniciar sesión" : "Crear cuenta"}
+          </h2>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Ingresá para ver el resumen de tu mes.
+          </p>
 
           <form onSubmit={submit} className="mt-6 space-y-4">
             <div className="space-y-2">
@@ -117,15 +133,21 @@ function LoginPage() {
                 <>
                   <Loader2 className="size-4 animate-spin" /> Ingresando…
                 </>
+              ) : mode === "in" ? (
+                "Ingresar"
               ) : (
-                mode === "in" ? "Ingresar" : "Crear cuenta"
+                "Crear cuenta"
               )}
             </Button>
           </form>
 
           <p className="mt-5 text-center text-xs text-muted-foreground">
             {mode === "in" ? "¿No tenés cuenta? " : "¿Ya tenés cuenta? "}
-            <button type="button" className="font-medium text-primary" onClick={() => setMode(mode === "in" ? "up" : "in")}>
+            <button
+              type="button"
+              className="font-medium text-primary"
+              onClick={() => setMode(mode === "in" ? "up" : "in")}
+            >
               {mode === "in" ? "Crear una" : "Iniciar sesión"}
             </button>
           </p>

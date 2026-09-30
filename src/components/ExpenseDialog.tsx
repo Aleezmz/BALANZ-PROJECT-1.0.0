@@ -79,7 +79,9 @@ export function ExpenseDialog({ open, onOpenChange, onSave, defaultDate }: Props
       <DialogContent className="sm:max-w-lg rounded-3xl border-border/70 glass shadow-elegant">
         <DialogHeader>
           <DialogTitle className="text-xl">Nuevo gasto</DialogTitle>
-          <DialogDescription>Registrá un movimiento con su categoría y responsable.</DialogDescription>
+          <DialogDescription>
+            Registrá un movimiento con su categoría y responsable.
+          </DialogDescription>
         </DialogHeader>
 
         <form onSubmit={submit} className="space-y-4">
@@ -117,7 +119,9 @@ export function ExpenseDialog({ open, onOpenChange, onSave, defaultDate }: Props
                       active ? "border-primary bg-accent" : "border-border hover:bg-muted"
                     }`}
                   >
-                    <span className={`flex size-8 items-center justify-center rounded-full ${c.bgClass}`}>
+                    <span
+                      className={`flex size-8 items-center justify-center rounded-full ${c.bgClass}`}
+                    >
                       <Icon className={`size-4 ${c.colorClass}`} />
                     </span>
                     {c.label}
@@ -131,10 +135,14 @@ export function ExpenseDialog({ open, onOpenChange, onSave, defaultDate }: Props
             <div className="space-y-2">
               <Label>{category === "personales" ? "Integrante" : "Subcategoría"}</Label>
               <Select value={subcategory} onValueChange={setSubcategory}>
-                <SelectTrigger className="h-11 w-full"><SelectValue /></SelectTrigger>
+                <SelectTrigger className="h-11 w-full">
+                  <SelectValue />
+                </SelectTrigger>
                 <SelectContent>
                   {cat.subcategories.map((s) => (
-                    <SelectItem key={s} value={s}>{s}</SelectItem>
+                    <SelectItem key={s} value={s}>
+                      {s}
+                    </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
@@ -143,10 +151,14 @@ export function ExpenseDialog({ open, onOpenChange, onSave, defaultDate }: Props
               <div className="space-y-2">
                 <Label>Persona asociada</Label>
                 <Select value={member} onValueChange={(v) => setMember(v as Member)}>
-                  <SelectTrigger className="h-11 w-full"><SelectValue /></SelectTrigger>
+                  <SelectTrigger className="h-11 w-full">
+                    <SelectValue />
+                  </SelectTrigger>
                   <SelectContent>
                     {(["Hogar", ...MEMBERS] as Member[]).map((m) => (
-                      <SelectItem key={m} value={m}>{m}</SelectItem>
+                      <SelectItem key={m} value={m}>
+                        {m}
+                      </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
@@ -154,7 +166,14 @@ export function ExpenseDialog({ open, onOpenChange, onSave, defaultDate }: Props
             ) : (
               <div className="space-y-2">
                 <Label htmlFor="date">Fecha</Label>
-                <Input id="date" type="date" value={date} onChange={(e) => setDate(e.target.value)} className="h-11" required />
+                <Input
+                  id="date"
+                  type="date"
+                  value={date}
+                  onChange={(e) => setDate(e.target.value)}
+                  className="h-11"
+                  required
+                />
               </div>
             )}
           </div>
@@ -162,7 +181,14 @@ export function ExpenseDialog({ open, onOpenChange, onSave, defaultDate }: Props
           {category !== "personales" && (
             <div className="space-y-2">
               <Label htmlFor="date">Fecha</Label>
-              <Input id="date" type="date" value={date} onChange={(e) => setDate(e.target.value)} className="h-11" required />
+              <Input
+                id="date"
+                type="date"
+                value={date}
+                onChange={(e) => setDate(e.target.value)}
+                className="h-11"
+                required
+              />
             </div>
           )}
 
@@ -179,8 +205,12 @@ export function ExpenseDialog({ open, onOpenChange, onSave, defaultDate }: Props
           </div>
 
           <DialogFooter className="gap-2 sm:gap-2">
-            <Button type="button" variant="ghost" onClick={() => onOpenChange(false)}>Cancelar</Button>
-            <Button type="submit" className="h-11 px-6 rounded-xl">Guardar gasto</Button>
+            <Button type="button" variant="ghost" onClick={() => onOpenChange(false)}>
+              Cancelar
+            </Button>
+            <Button type="submit" className="h-11 px-6 rounded-xl">
+              Guardar gasto
+            </Button>
           </DialogFooter>
         </form>
       </DialogContent>

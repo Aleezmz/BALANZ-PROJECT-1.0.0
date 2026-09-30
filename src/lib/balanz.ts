@@ -159,7 +159,9 @@ const VARIATION = [0.94, 1.03, 1];
 export const MOCK_EXPENSES: Expense[] = MONTHS.flatMap((month, mi) =>
   SEED.map(([day, category, subcategory, member, description, amount], i) => ({
     id: `${month}-${i}`,
-    amount: Math.round((amount * (VARIATION[mi]! + ((i % 4) - 1.5) * 0.02 * (mi === 2 ? 0 : 1))) / 500) * 500,
+    amount:
+      Math.round((amount * (VARIATION[mi]! + ((i % 4) - 1.5) * 0.02 * (mi === 2 ? 0 : 1))) / 500) *
+      500,
     date: `${month}-${String(day).padStart(2, "0")}`,
     category,
     subcategory,
@@ -176,9 +178,10 @@ export const formatGs = (value: number) =>
 export const formatDate = (iso: string, short = false) => {
   const [y, m, d] = iso.split("-").map(Number);
   const date = new Date(y ?? 2026, (m ?? 1) - 1, d ?? 1);
-  return new Intl.DateTimeFormat("es-PY", short
-    ? { day: "2-digit", month: "short" }
-    : { day: "2-digit", month: "long", year: "numeric" }).format(date);
+  return new Intl.DateTimeFormat(
+    "es-PY",
+    short ? { day: "2-digit", month: "short" } : { day: "2-digit", month: "long", year: "numeric" },
+  ).format(date);
 };
 
 export const monthLabel = (iso: string) => {
@@ -198,7 +201,14 @@ const csvCell = (v: string | number) => `"${String(v).replace(/"/g, '""')}"`;
 
 export function exportExpensesCsv(list: Expense[], filename: string) {
   const header = ["Fecha", "Descripción", "Categoría", "Subcategoría", "Integrante", "Monto (Gs)"];
-  const rows = list.map((e) => [e.date, e.description, getCategory(e.category).label, e.subcategory, e.member, e.amount]);
+  const rows = list.map((e) => [
+    e.date,
+    e.description,
+    getCategory(e.category).label,
+    e.subcategory,
+    e.member,
+    e.amount,
+  ]);
   const csv = "sep=;\r\n" + [header, ...rows].map((r) => r.map(csvCell).join(";")).join("\r\n");
   const blob = new Blob(["\ufeff" + csv], { type: "text/csv;charset=utf-8" });
   const url = URL.createObjectURL(blob);

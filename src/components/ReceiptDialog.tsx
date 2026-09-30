@@ -2,14 +2,28 @@ import { useEffect, useMemo, useState } from "react";
 import { motion, useAnimationControls } from "framer-motion";
 import { Copy, Loader2, Printer, Scissors } from "lucide-react";
 import { toast } from "sonner";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { formatDate, formatGs, getCategory, type CategoryId, type Expense } from "@/lib/balanz";
 
 type Phase = "idle" | "printing" | "printed" | "cutting";
 
-const BARS = [2, 1, 3, 1, 1, 2, 1, 3, 2, 1, 1, 3, 1, 2, 2, 1, 3, 1, 1, 2, 1, 3, 2, 1, 2, 1, 1, 3, 1, 2];
+const BARS = [
+  2, 1, 3, 1, 1, 2, 1, 3, 2, 1, 1, 3, 1, 2, 2, 1, 3, 1, 1, 2, 1, 3, 2, 1, 2, 1, 1, 3, 1, 2,
+];
 
 const zigzag =
   "polygon(0 0,100% 0,100% calc(100% - 10px)," +
@@ -41,7 +55,7 @@ export function ReceiptDialog({
   }, [open]);
 
   const selected = useMemo(
-    () => (selectedId === "all" ? null : expenses.find((e) => e.id === selectedId) ?? null),
+    () => (selectedId === "all" ? null : (expenses.find((e) => e.id === selectedId) ?? null)),
     [selectedId, expenses],
   );
 
@@ -83,7 +97,13 @@ export function ReceiptDialog({
   const cut = async () => {
     setPhase("cutting");
     await controls.start({ y: "-4%", transition: { duration: 0.15, ease: "easeOut" } });
-    await controls.start({ y: "130%", x: 160, rotate: 12, opacity: 0, transition: { duration: 0.45, ease: "easeIn" } });
+    await controls.start({
+      y: "130%",
+      x: 160,
+      rotate: 12,
+      opacity: 0,
+      transition: { duration: 0.45, ease: "easeIn" },
+    });
     controls.set({ y: "-100%", x: 0, rotate: 0, opacity: 1 });
     setPhase("idle");
   };
@@ -112,7 +132,9 @@ export function ReceiptDialog({
       <DialogContent className="sm:max-w-md rounded-3xl">
         <DialogHeader>
           <DialogTitle>Generar recibo</DialogTitle>
-          <DialogDescription>Elegí un movimiento o imprimí el resumen de todo el filtro actual.</DialogDescription>
+          <DialogDescription>
+            Elegí un movimiento o imprimí el resumen de todo el filtro actual.
+          </DialogDescription>
         </DialogHeader>
 
         <Select value={selectedId} onValueChange={setSelectedId}>
@@ -133,7 +155,10 @@ export function ReceiptDialog({
 
         <div className="flex flex-col items-center">
           <div className="h-4 w-full rounded-full bg-gray-900 shadow-[0_4px_10px_rgba(0,0,0,0.5)]" />
-          <div className="relative -mt-1 w-[88%] overflow-hidden" style={{ minHeight: phase === "idle" ? 0 : undefined }}>
+          <div
+            className="relative -mt-1 w-[88%] overflow-hidden"
+            style={{ minHeight: phase === "idle" ? 0 : undefined }}
+          >
             <motion.div
               initial={{ y: "-100%" }}
               animate={controls}
@@ -172,13 +197,26 @@ export function ReceiptDialog({
 
           <div className="mt-5 flex flex-wrap justify-center gap-2">
             {phase === "idle" || phase === "printing" ? (
-              <Button onClick={print} disabled={phase === "printing" || expenses.length === 0} className="rounded-xl">
-                {phase === "printing" ? <Loader2 className="size-4 animate-spin" /> : <Printer className="size-4" />}
+              <Button
+                onClick={print}
+                disabled={phase === "printing" || expenses.length === 0}
+                className="rounded-xl"
+              >
+                {phase === "printing" ? (
+                  <Loader2 className="size-4 animate-spin" />
+                ) : (
+                  <Printer className="size-4" />
+                )}
                 {phase === "printing" ? "Imprimiendo..." : "Imprimir comprobante"}
               </Button>
             ) : (
               <>
-                <Button variant="outline" className="rounded-xl" onClick={print} disabled={phase === "cutting"}>
+                <Button
+                  variant="outline"
+                  className="rounded-xl"
+                  onClick={print}
+                  disabled={phase === "cutting"}
+                >
                   <Printer className="size-4" /> Reimprimir
                 </Button>
                 <Button className="rounded-xl" onClick={cut} disabled={phase === "cutting"}>
