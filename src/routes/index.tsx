@@ -12,7 +12,7 @@ import {
   Receipt,
   Search,
   Trash2,
-  Download,
+  Printer,
   Users,
   Car,
   Wallet,
@@ -30,6 +30,7 @@ import {
 } from "@/components/ui/select";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { ExpenseDialog } from "@/components/ExpenseDialog";
+import { ReceiptDialog } from "@/components/ReceiptDialog";
 import {
   AVAILABLE_MONTHS,
   CATEGORIES,
@@ -40,7 +41,6 @@ import {
   getCategory,
   monthLabel,
   prevMonth,
-  exportExpensesCsv,
   type Expense,
   type Member,
 } from "@/lib/balanz";
@@ -147,6 +147,7 @@ function Dashboard() {
   };
   const [month, setMonth] = useState(AVAILABLE_MONTHS[AVAILABLE_MONTHS.length - 1]!);
   const [open, setOpen] = useState(false);
+  const [receiptOpen, setReceiptOpen] = useState(false);
   const [tab, setTab] = useState("resumen");
   const [expanded, setExpanded] = useState<string | null>("servicios");
 
@@ -479,8 +480,8 @@ function Dashboard() {
               <span className="text-muted-foreground">{filtered.length} movimientos</span>
               <div className="flex items-center gap-3">
                 <span className="numeric font-semibold">Total filtrado: {formatGs(sum(filtered))}</span>
-                <Button variant="outline" size="sm" className="rounded-full" disabled={!filtered.length} onClick={() => exportExpensesCsv(filtered, `balanz-movimientos-${month}.csv`)}>
-                  <Download className="size-4" /> Descargar Excel
+                <Button variant="outline" size="sm" className="rounded-full" onClick={() => setReceiptOpen(true)}>
+                  <Printer className="size-4" /> Generar recibo
                 </Button>
               </div>
             </div>
@@ -536,6 +537,7 @@ function Dashboard() {
         <Plus className="size-6" />
       </Button>
 
+      <ReceiptDialog open={receiptOpen} onOpenChange={setReceiptOpen} />
       <ExpenseDialog
         open={open}
         onOpenChange={setOpen}
