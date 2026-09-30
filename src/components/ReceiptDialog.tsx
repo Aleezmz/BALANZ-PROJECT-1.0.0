@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { formatDate, formatGs, getCategory, type Expense } from "@/lib/balanz";
+import { formatDate, formatGs, getCategory, type CategoryId, type Expense } from "@/lib/balanz";
 
 type Phase = "idle" | "printing" | "printed" | "cutting";
 
@@ -52,7 +52,7 @@ export function ReceiptDialog({
     const map = new Map<string, number>();
     for (const e of expenses) map.set(e.category, (map.get(e.category) ?? 0) + e.amount);
     return Array.from(map.entries())
-      .map(([cat, amount]) => ({ label: getCategory(cat).label, amount }))
+      .map(([cat, amount]) => ({ label: getCategory(cat as CategoryId).label, amount }))
       .sort((a, b) => b.amount - a.amount);
   }, [expenses]);
 
