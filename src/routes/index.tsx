@@ -61,6 +61,10 @@ export const Route = createFileRoute("/")({
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
+    links: [
+      { rel: "icon", href: "/logo.ico", type: "image/x-icon" },
+      { rel: "shortcut icon", href: "/logo.ico", type: "image/x-icon" },
+    ],
   }),
   component: Dashboard,
 });
