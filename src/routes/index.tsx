@@ -537,7 +537,7 @@ function Dashboard() {
         <Plus className="size-6" />
       </Button>
 
-      <ReceiptDialog open={receiptOpen} onOpenChange={setReceiptOpen} />
+      <ReceiptDialog open={receiptOpen} onOpenChange={setReceiptOpen} expenses={filtered} periodLabel={monthLabel(month)} />
       <ExpenseDialog
         open={open}
         onOpenChange={setOpen}
