@@ -1,19 +1,13 @@
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { motion, useAnimationControls } from "framer-motion";
 import { Copy, Loader2, Printer, Scissors } from "lucide-react";
 import { toast } from "sonner";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { formatDate, formatGs, getCategory, type Expense } from "@/lib/balanz";
 
 type Phase = "idle" | "printing" | "printed" | "cutting";
-
-const DATA = {
-  fecha: "30 Sep 2026",
-  concepto: "Compra quincenal Superseis",
-  categoria: "Alimentación y Súper",
-  integrante: "Hogar",
-  total: "₲ 150.000",
-};
 
 const BARS = [2, 1, 3, 1, 1, 2, 1, 3, 2, 1, 1, 3, 1, 2, 2, 1, 3, 1, 1, 2, 1, 3, 2, 1, 2, 1, 1, 3, 1, 2];
 
@@ -25,9 +19,59 @@ const zigzag =
   }).join(",") +
   ")";
 
-export function ReceiptDialog({ open, onOpenChange }: { open: boolean; onOpenChange: (o: boolean) => void }) {
+type Row = [string, string];
+
+export function ReceiptDialog({
+  open,
+  onOpenChange,
+  expenses,
+  periodLabel,
+}: {
+  open: boolean;
+  onOpenChange: (o: boolean) => void;
+  expenses: Expense[];
+  periodLabel: string;
+}) {
   const [phase, setPhase] = useState<Phase>("idle");
+  const [selectedId, setSelectedId] = useState<string>("all");
   const controls = useAnimationControls();
+
+  useEffect(() => {
+    if (open) setSelectedId("all");
+  }, [open]);
+
+  const selected = useMemo(
+    () => (selectedId === "all" ? null : expenses.find((e) => e.id === selectedId) ?? null),
+    [selectedId, expenses],
+  );
+
+  const total = expenses.reduce((acc, e) => acc + e.amount, 0);
+
+  // Resumen por categoría para el recibo de "todos los movimientos"
+  const byCategory = useMemo(() => {
+    const map = new Map<string, number>();
+    for (const e of expenses) map.set(e.category, (map.get(e.category) ?? 0) + e.amount);
+    return Array.from(map.entries())
+      .map(([cat, amount]) => ({ label: getCategory(cat).label, amount }))
+      .sort((a, b) => b.amount - a.amount);
+  }, [expenses]);
+
+  const rows: Row[] = selected
+    ? [
+        ["Fecha", formatDate(selected.date, true)],
+        ["Concepto", selected.description],
+        ["Categoría", getCategory(selected.category).label],
+        ["Subcategoría", selected.subcategory],
+        ["Integrante", selected.member],
+      ]
+    : [
+        ["Período", periodLabel],
+        ["Movimientos", String(expenses.length)],
+        ...byCategory.map((c): Row => [c.label, formatGs(c.amount)]),
+      ];
+
+  const receiptTotal = selected ? selected.amount : total;
+  const receiptTitle = selected ? "COMPROBANTE DE MOVIMIENTO" : "RESUMEN DE MOVIMIENTOS";
 
   const print = async () => {
     setPhase("printing");
@@ -45,7 +89,8 @@ export function ReceiptDialog({ open, onOpenChange }: { open: boolean; onOpenCha
   };
 
   const copy = async () => {
-    const text = `BALANZ - Comprobante\nFecha: ${DATA.fecha}\nConcepto: ${DATA.concepto}\nCategoría: ${DATA.categoria}\nIntegrante: ${DATA.integrante}\nTotal: ${DATA.total}`;
+    const lines = rows.map(([k, v]) => `${k}: ${v}`).join("\n");
+    const text = `BALANZ - ${receiptTitle}\n${lines}\nTotal: ${formatGs(receiptTotal)}`;
     try {
       await navigator.clipboard.writeText(text);
       toast.success("Información copiada");
@@ -67,8 +112,24 @@ export function ReceiptDialog({ open, onOpenChange }: { open: boolean; onOpenCha
       <DialogContent className="sm:max-w-md rounded-3xl">
         <DialogHeader>
           <DialogTitle>Generar recibo</DialogTitle>
-          <DialogDescription>Imprimí un comprobante del movimiento.</DialogDescription>
+          <DialogDescription>Elegí un movimiento o imprimí el resumen de todo el filtro actual.</DialogDescription>
         </DialogHeader>
+
+        <Select value={selectedId} onValueChange={setSelectedId}>
+          <SelectTrigger className="w-full rounded-xl">
+            <SelectValue placeholder="Elegí el movimiento" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">
+              Todos los movimientos filtrados ({expenses.length}) · {formatGs(total)}
+            </SelectItem>
+            {expenses.map((e) => (
+              <SelectItem key={e.id} value={e.id}>
+                {formatDate(e.date, true)} · {e.description} · {formatGs(e.amount)}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
 
         <div className="flex flex-col items-center">
           <div className="h-4 w-full rounded-full bg-gray-900 shadow-[0_4px_10px_rgba(0,0,0,0.5)]" />
@@ -81,11 +142,11 @@ export function ReceiptDialog({ open, onOpenChange }: { open: boolean; onOpenCha
             >
               <div className="text-center">
                 <p className="text-lg font-bold tracking-[0.3em]">BALANZ</p>
-                <p className="text-[10px] tracking-widest opacity-70">COMPROBANTE DE MOVIMIENTO</p>
+                <p className="text-[10px] tracking-widest opacity-70">{receiptTitle}</p>
               </div>
               <div className="my-3 border-t border-dashed border-current opacity-40" />
               <dl className="space-y-1.5">
-                {[["Fecha", DATA.fecha], ["Concepto", DATA.concepto], ["Categoría", DATA.categoria], ["Integrante", DATA.integrante]].map(([k, v]) => (
+                {rows.map(([k, v]) => (
                   <div key={k} className="flex justify-between gap-3">
                     <dt className="opacity-60">{k}</dt>
                     <dd className="text-right">{v}</dd>
@@ -95,7 +156,7 @@ export function ReceiptDialog({ open, onOpenChange }: { open: boolean; onOpenCha
               <div className="my-3 border-t border-dashed border-current opacity-40" />
               <div className="flex items-end justify-between">
                 <span className="opacity-60">TOTAL</span>
-                <span className="text-2xl font-bold">{DATA.total}</span>
+                <span className="text-2xl font-bold">{formatGs(receiptTotal)}</span>
               </div>
               <div className="pointer-events-none absolute right-5 top-24 -rotate-[15deg] rounded border-2 border-green-500 px-2 py-0.5 text-sm font-bold tracking-widest text-green-500">
                 REGISTRADO
@@ -111,7 +172,7 @@ export function ReceiptDialog({ open, onOpenChange }: { open: boolean; onOpenCha
 
           <div className="mt-5 flex flex-wrap justify-center gap-2">
             {phase === "idle" || phase === "printing" ? (
-              <Button onClick={print} disabled={phase === "printing"} className="rounded-xl">
+              <Button onClick={print} disabled={phase === "printing" || expenses.length === 0} className="rounded-xl">
                 {phase === "printing" ? <Loader2 className="size-4 animate-spin" /> : <Printer className="size-4" />}
                 {phase === "printing" ? "Imprimiendo..." : "Imprimir comprobante"}
               </Button>
