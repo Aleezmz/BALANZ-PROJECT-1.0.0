@@ -3,6 +3,7 @@ import {
   CreditCard,
   ShoppingCart,
   HeartPulse,
+  PawPrint,
   Users,
   PartyPopper,
   Car,
@@ -14,6 +15,7 @@ export type CategoryId =
   | "financiero"
   | "alimentacion"
   | "salud"
+  | "veterinaria"
   | "personales"
   | "transporte"
   | "varios";
@@ -48,7 +50,7 @@ export const CATEGORIES: Category[] = [
     colorClass: "text-cat-transport",
     bgClass: "bg-cat-transport/12",
     barClass: "bg-cat-transport",
-    subcategories: ["Coomecipar", "Ueno", "Préstamo", "SPS"],
+    subcategories: ["Coomecipar", "Ueno", "Préstamo"],
   },
   {
     id: "alimentacion",
@@ -66,7 +68,16 @@ export const CATEGORIES: Category[] = [
     colorClass: "text-cat-pharmacy",
     bgClass: "bg-cat-pharmacy/12",
     barClass: "bg-cat-pharmacy",
-    subcategories: ["Medicamentos", "Veterinaria Kira", "Consultas"],
+    subcategories: ["Medicamentos", "SPS", "Consultas"],
+  },
+  {
+    id: "veterinaria",
+    label: "Veterinaria",
+    icon: PawPrint,
+    colorClass: "text-cat-market",
+    bgClass: "bg-cat-market/12",
+    barClass: "bg-cat-market",
+    subcategories: ["Kira", "Vacunas", "Control", "Emergencias"],
   },
   {
     id: "personales",
@@ -122,14 +133,14 @@ const SEED: Seed[] = [
   [8, "financiero", "Coomecipar", "Marco", "Pago mínimo tarjeta Coomecipar", 1250000],
   [9, "financiero", "Ueno", "Lisa", "Pago tarjeta Ueno", 870000],
   [10, "financiero", "Préstamo", "Hogar", "Cuota préstamo personal 14/36", 1480000],
-  [10, "financiero", "SPS", "Hogar", "Seguro médico SPS", 690000],
+  [10, "salud", "SPS", "Hogar", "Seguro médico SPS", 690000],
   [4, "alimentacion", "Super", "Hogar", "Compra quincenal Superseis", 1185000],
   [18, "alimentacion", "Super", "Hogar", "Compra quincenal Stock", 942300],
   [12, "alimentacion", "Comidas fuera", "Sebas", "Pizza viernes familiar", 185000],
   [22, "alimentacion", "Despensa", "Hogar", "Despensa del barrio: pan y lácteos", 96500],
   [11, "salud", "Medicamentos", "Marco", "Losartán + Metformina (Marco)", 238000],
   [15, "salud", "Medicamentos", "Lisa", "Antibiótico y analgésico (Lisa)", 124500],
-  [16, "salud", "Veterinaria Kira", "Hogar", "Veterinaria Kira: vacuna y control", 210000],
+  [16, "veterinaria", "Kira", "Hogar", "Veterinaria Kira: vacuna y control", 210000],
   [20, "salud", "Consultas", "Ale", "Consulta pediatra Ale", 250000],
   [13, "personales", "Sebas", "Sebas", "Cuota colegio Sebas", 780000],
   [14, "personales", "Ale", "Ale", "Útiles y uniforme Ale", 165000],
