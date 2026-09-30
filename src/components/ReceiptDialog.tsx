@@ -60,7 +60,7 @@ export function ReceiptDialog({
     ? [
         ["Fecha", formatDate(selected.date, true)],
         ["Concepto", selected.description],
-        ["Categoría", getCategory(selected.category).label],
+        ["Categoría", getCategory(selected.category as CategoryId).label],
         ["Subcategoría", selected.subcategory],
         ["Integrante", selected.member],
       ]
